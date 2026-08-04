@@ -10,6 +10,11 @@
 ARunnerGameMode::ARunnerGameMode()
 {
 	DefaultPawnClass = ARunnerCharacter::StaticClass();
+	static ConstructorHelpers::FClassFinder<APawn> RunnerBPClass(TEXT("/Game/Characters/BP_RunnerPlayable"));
+	if (RunnerBPClass.Succeeded())
+	{
+		DefaultPawnClass = RunnerBPClass.Class;
+	}
 	PlayerControllerClass = ARunnerPlayerController::StaticClass();
 	SpawnerClass = ARunnerSpawner::StaticClass();
 }

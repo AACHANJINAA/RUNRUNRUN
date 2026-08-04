@@ -22,6 +22,17 @@
 
 ## Current Direction
 
+- This game is currently being developed as a `Temple Run`-style prototype.
 - Main level should start gameplay immediately.
-- Character should use Unreal default mannequin style first.
+- The first playable prototype should use the Unreal default character setup before final art is integrated.
+- Structure the prototype so that character meshes, obstacle meshes, and other art assets can be replaced easily later without rewriting gameplay logic.
 - Art migration from the reference project happens after the gameplay loop is stable.
+
+## Prototype Goal
+
+- The core game must function as an endless runner with an infinitely repeating path.
+- The player must be able to avoid obstacles through:
+  - jumping
+  - sliding
+  - moving across three lanes
+- The prototype should prioritize stable gameplay flow first, then animation polish, then final asset replacement.
