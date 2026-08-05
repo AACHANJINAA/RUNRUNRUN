@@ -73,6 +73,7 @@ ARunnerCharacter::ARunnerCharacter()
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 
 	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &ARunnerCharacter::HandleCapsuleOverlap);
+	GetCapsuleComponent()->OnComponentHit.AddDynamic(this, &ARunnerCharacter::HandleCapsuleHit);
 }
 
 void ARunnerCharacter::BeginPlay()
@@ -120,6 +121,16 @@ void ARunnerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	PlayerInputComponent->BindAction(TEXT("MoveLeft"), IE_Pressed, this, &ARunnerCharacter::MoveLeft);
 	PlayerInputComponent->BindAction(TEXT("MoveRight"), IE_Pressed, this, &ARunnerCharacter::MoveRight);
 	PlayerInputComponent->BindAction(TEXT("Slide"), IE_Pressed, this, &ARunnerCharacter::StartSlide);
+}
+
+void ARunnerCharacter::NotifyActorBeginOverlap(AActor* OtherActor)
+{
+	Super::NotifyActorBeginOverlap(OtherActor);
+
+	if (IsObstacleActor(OtherActor))
+	{
+		KillCharacter();
+	}
 }
 
 void ARunnerCharacter::KillCharacter()
@@ -197,13 +208,40 @@ void ARunnerCharacter::HandleCapsuleOverlap(
 	bool bFromSweep,
 	const FHitResult& SweepResult)
 {
+	if (IsObstacleActor(OtherActor))
+	{
+		KillCharacter();
+	}
+}
+
+void ARunnerCharacter::HandleCapsuleHit(
+	UPrimitiveComponent* HitComponent,
+	AActor* OtherActor,
+	UPrimitiveComponent* OtherComp,
+	FVector NormalImpulse,
+	const FHitResult& Hit)
+{
+	if (IsObstacleActor(OtherActor))
+	{
+		KillCharacter();
+	}
+}
+
+bool ARunnerCharacter::IsObstacleActor(const AActor* OtherActor) const
+{
 	if (!OtherActor || OtherActor == this || bIsDead)
 	{
-		return;
+		return false;
 	}
 
 	if (OtherActor->ActorHasTag(TEXT("Obstacle")))
 	{
-		KillCharacter();
+		return true;
 	}
+
+	const FString ActorClassName = OtherActor->GetClass() ? OtherActor->GetClass()->GetName() : FString();
+	const FString ActorName = OtherActor->GetName();
+
+	return ActorClassName.Contains(TEXT("Obstacle"))
+		|| ActorName.Contains(TEXT("Obstacle"));
 }

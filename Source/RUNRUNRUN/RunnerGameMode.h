@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
+#include "TimerManager.h"
 #include "RunnerGameMode.generated.h"
 
 class ARunnerSpawner;
@@ -44,9 +45,14 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Runner")
 	FString SaveSlotName = TEXT("RunnerSave");
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Runner")
+	float RestartDelayAfterDeath = 1.5f;
+
 private:
 	UPROPERTY()
 	TObjectPtr<ARunnerSpawner> Spawner;
+
+	FTimerHandle RestartTimerHandle;
 
 	float CurrentScore = 0.0f;
 	float BestScore = 0.0f;

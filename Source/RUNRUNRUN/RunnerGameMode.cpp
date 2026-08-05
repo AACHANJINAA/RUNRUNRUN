@@ -54,6 +54,12 @@ void ARunnerGameMode::HandlePlayerDeath()
 
 	bPlayerDead = true;
 	SaveBestScore();
+
+	GetWorldTimerManager().ClearTimer(RestartTimerHandle);
+	GetWorldTimerManager().SetTimer(RestartTimerHandle, [this]()
+	{
+		UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), true);
+	}, RestartDelayAfterDeath, false);
 }
 
 void ARunnerGameMode::TogglePauseState()
