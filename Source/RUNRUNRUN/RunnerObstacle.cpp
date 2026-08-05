@@ -18,18 +18,11 @@ ARunnerObstacle::ARunnerObstacle()
 
 	static const TCHAR* ObstacleMeshPaths[] =
 	{
-		TEXT("/Game/RoadBlockoutKit/Meshes/SM_Obstacle_A_Frame_Sign.SM_Obstacle_A_Frame_Sign"),
-		TEXT("/Game/RoadBlockoutKit/Meshes/SM_Obstacle_Barricade.SM_Obstacle_Barricade"),
-		TEXT("/Game/RoadBlockoutKit/Meshes/SM_Obstacle_Cabin.SM_Obstacle_Cabin"),
-		TEXT("/Game/RoadBlockoutKit/Meshes/SM_Obstacle_Chair.SM_Obstacle_Chair"),
-		TEXT("/Game/RoadBlockoutKit/Meshes/SM_Obstacle_Cone.SM_Obstacle_Cone"),
-		TEXT("/Game/RoadBlockoutKit/Meshes/SM_Obstacle_Light_Post.SM_Obstacle_Light_Post"),
-		TEXT("/Game/RoadBlockoutKit/Meshes/SM_Obstacle_MailBox.SM_Obstacle_MailBox"),
-		TEXT("/Game/RoadBlockoutKit/Meshes/SM_Obstacle_Pedestrian_Barrier_Fence.SM_Obstacle_Pedestrian_Barrier_Fence"),
-		TEXT("/Game/RoadBlockoutKit/Meshes/SM_Obstacle_Plastic_Soda_Crate.SM_Obstacle_Plastic_Soda_Crate"),
-		TEXT("/Game/RoadBlockoutKit/Meshes/SM_Obstacle_Steel_Barrel.SM_Obstacle_Steel_Barrel"),
-		TEXT("/Game/RoadBlockoutKit/Meshes/SM_Obstacle_Trash_Cans.SM_Obstacle_Trash_Cans"),
-		TEXT("/Game/RoadBlockoutKit/Meshes/SMBO_Obstacle_A_Frame_Ladder.SMBO_Obstacle_A_Frame_Ladder")
+		TEXT("/Game/RoadBlockoutKit/Meshes/SM_Houses_A.SM_Houses_A"),
+		TEXT("/Game/RoadBlockoutKit/Meshes/SM_Houses_B.SM_Houses_B"),
+		TEXT("/Game/RoadBlockoutKit/Meshes/SM_Houses_C.SM_Houses_C"),
+		TEXT("/Game/RoadBlockoutKit/Meshes/SM_Houses_D.SM_Houses_D"),
+		TEXT("/Game/RoadBlockoutKit/Meshes/SM_Houses_E.SM_Houses_E")
 	};
 
 	const int32 MeshIndex = FMath::RandRange(0, UE_ARRAY_COUNT(ObstacleMeshPaths) - 1);
@@ -38,6 +31,7 @@ ARunnerObstacle::ARunnerObstacle()
 		ObstacleMesh->SetStaticMesh(SelectedMesh);
 		const FBoxSphereBounds Bounds = SelectedMesh->GetBounds();
 		CollisionBox->SetBoxExtent(Bounds.BoxExtent.GetAbs());
+		ObstacleMesh->SetRelativeLocation(-Bounds.Origin);
 	}
 	else
 	{

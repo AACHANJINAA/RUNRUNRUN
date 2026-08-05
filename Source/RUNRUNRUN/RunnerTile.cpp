@@ -97,18 +97,39 @@ void ARunnerTile::SpawnObstacles()
 		return;
 	}
 
-	const int32 Count = FMath::RandRange(ObstaclesPerTileMin, ObstaclesPerTileMax);
-	TSet<int32> UsedSlots;
+	TArray<int32> AvailableSlots;
+	for (int32 Slot = 1; Slot <= 5; ++Slot)
+	{
+		const float X = (TileLength / 6.0f) * Slot;
+		const bool bIsInsideInitialSafeZone = (TileIndex == 0) && (X <= InitialSafeDistance);
+		if (!bIsInsideInitialSafeZone)
+		{
+			AvailableSlots.Add(Slot);
+		}
+	}
 
-	for (int32 Index = 0; Index < Count; ++Index)
+	if (AvailableSlots.Num() == 0)
+	{
+		return;
+	}
+
+	const int32 Count = FMath::RandRange(ObstaclesPerTileMin, ObstaclesPerTileMax);
+	const int32 SpawnCount = FMath::Min(Count, AvailableSlots.Num());
+
+	for (int32 Index = 0; Index < SpawnCount; ++Index)
 	{
 		const int32 Lane = FMath::RandRange(-1, 1);
-		int32 Slot = FMath::RandRange(1, 5);
-		while (UsedSlots.Contains(Slot))
+		const int32 SlotPickIndex = FMath::RandRange(0, AvailableSlots.Num() - 1);
+		const int32 Slot = AvailableSlots[SlotPickIndex];
+		AvailableSlots.RemoveAtSwap(SlotPickIndex);
+
+		for (int32 CandidateIndex = AvailableSlots.Num() - 1; CandidateIndex >= 0; --CandidateIndex)
 		{
-			Slot = FMath::RandRange(1, 5);
+			if (FMath::Abs(AvailableSlots[CandidateIndex] - Slot) < MinimumSlotGap)
+			{
+				AvailableSlots.RemoveAtSwap(CandidateIndex);
+			}
 		}
-		UsedSlots.Add(Slot);
 
 		const float X = (TileLength / 6.0f) * Slot;
 		const float Y = Lane * LaneWidth;

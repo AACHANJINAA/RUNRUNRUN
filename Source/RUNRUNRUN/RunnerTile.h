@@ -50,7 +50,13 @@ protected:
 	int32 ObstaclesPerTileMin = 1;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Runner")
-	int32 ObstaclesPerTileMax = 3;
+	int32 ObstaclesPerTileMax = 2;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Runner")
+	float InitialSafeDistance = 2400.0f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Runner")
+	int32 MinimumSlotGap = 2;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Runner")
 	TSubclassOf<ARunnerObstacle> ObstacleClass;
