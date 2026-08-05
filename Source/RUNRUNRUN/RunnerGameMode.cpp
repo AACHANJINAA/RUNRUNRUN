@@ -34,14 +34,14 @@ void ARunnerGameMode::BeginPlay()
 	}
 }
 
-void ARunnerGameMode::UpdateScoreFromDistance(float PlayerDistance)
+void ARunnerGameMode::AddScoreOverTime(float DeltaSeconds)
 {
-	if (bPlayerDead)
+	if (bPlayerDead || DeltaSeconds <= 0.0f)
 	{
 		return;
 	}
 
-	CurrentScore = FMath::Max(0.0f, PlayerDistance / 100.0f);
+	CurrentScore += ScorePerSecond * DeltaSeconds;
 	BestScore = FMath::Max(BestScore, CurrentScore);
 }
 

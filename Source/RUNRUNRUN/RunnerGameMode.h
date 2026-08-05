@@ -18,7 +18,7 @@ public:
 	virtual void BeginPlay() override;
 
 	UFUNCTION(BlueprintCallable, Category = "Runner")
-	void UpdateScoreFromDistance(float PlayerDistance);
+	void AddScoreOverTime(float DeltaSeconds);
 
 	UFUNCTION(BlueprintCallable, Category = "Runner")
 	void HandlePlayerDeath();
@@ -47,6 +47,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Runner")
 	float RestartDelayAfterDeath = 1.5f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Runner")
+	float ScorePerSecond = 10.0f;
 
 private:
 	UPROPERTY()

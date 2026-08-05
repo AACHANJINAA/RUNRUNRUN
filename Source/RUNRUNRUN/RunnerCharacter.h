@@ -59,11 +59,13 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Runner|Movement")
 	float SlideDuration = 0.65f;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Runner|State")
+	bool bIsDead = false;
+
 private:
 	FVector StartLocation = FVector::ZeroVector;
 	float DefaultCapsuleHalfHeight = 0.0f;
 	int32 TargetLane = 0;
-	bool bIsDead = false;
 	FTimerHandle SlideTimerHandle;
 	FTimerHandle GroundSnapTimerHandle;
 

@@ -109,7 +109,7 @@ void ARunnerCharacter::Tick(float DeltaSeconds)
 
 	if (ARunnerGameMode* GM = GetWorld()->GetAuthGameMode<ARunnerGameMode>())
 	{
-		GM->UpdateScoreFromDistance(GetActorLocation().X);
+		GM->AddScoreOverTime(DeltaSeconds);
 	}
 }
 
