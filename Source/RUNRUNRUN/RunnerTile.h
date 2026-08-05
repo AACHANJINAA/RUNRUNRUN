@@ -32,6 +32,9 @@ protected:
 	TObjectPtr<UStaticMeshComponent> FloorMesh;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Runner")
+	TObjectPtr<UBoxComponent> FloorCollision;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Runner")
 	TObjectPtr<UBoxComponent> EndTrigger;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Runner")

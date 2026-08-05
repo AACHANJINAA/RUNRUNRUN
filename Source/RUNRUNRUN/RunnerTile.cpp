@@ -16,19 +16,37 @@ ARunnerTile::ARunnerTile()
 	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 	SetRootComponent(Root);
 
+	FloorCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("FloorCollision"));
+	FloorCollision->SetupAttachment(Root);
+
 	FloorMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("FloorMesh"));
 	FloorMesh->SetupAttachment(Root);
 
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> CubeMesh(TEXT("/Engine/BasicShapes/Cube.Cube"));
-	if (CubeMesh.Succeeded())
+	float FloorThickness = 40.0f;
+
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> RoadMesh(TEXT("/Game/RoadBlockoutKit/Meshes/SM_Road.SM_Road"));
+	if (RoadMesh.Succeeded())
 	{
-		FloorMesh->SetStaticMesh(CubeMesh.Object);
+		FloorMesh->SetStaticMesh(RoadMesh.Object);
+
+		const FBoxSphereBounds MeshBounds = RoadMesh.Object->GetBounds();
+		const float MeshLength = FMath::Max(MeshBounds.BoxExtent.X * 2.0f, 1.0f);
+		const float MeshWidth = FMath::Max(MeshBounds.BoxExtent.Y * 2.0f, 1.0f);
+		const float MeshHeight = MeshBounds.BoxExtent.Z * 2.0f;
+		FloorThickness = FMath::Max(MeshHeight * 0.5f, 40.0f);
+
+		FloorMesh->SetWorldScale3D(FVector(TileLength / MeshLength, TileWidth / MeshWidth, 1.0f));
+		FloorMesh->SetRelativeLocation(FVector(TileLength * 0.5f, 0.0f, -MeshHeight * 0.5f));
 	}
 
-	FloorMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-	FloorMesh->SetCollisionResponseToAllChannels(ECR_Block);
-	FloorMesh->SetWorldScale3D(FVector(TileLength / 100.0f, TileWidth / 100.0f, 0.5f));
-	FloorMesh->SetRelativeLocation(FVector(TileLength * 0.5f, 0.0f, -50.0f));
+	FloorCollision->SetBoxExtent(FVector(TileLength * 0.5f, TileWidth * 0.5f, FloorThickness));
+	FloorCollision->SetRelativeLocation(FVector(TileLength * 0.5f, 0.0f, -FloorThickness));
+	FloorCollision->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	FloorCollision->SetCollisionObjectType(ECC_WorldStatic);
+	FloorCollision->SetCollisionResponseToAllChannels(ECR_Block);
+	FloorCollision->SetGenerateOverlapEvents(false);
+
+	FloorMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	EndTrigger = CreateDefaultSubobject<UBoxComponent>(TEXT("EndTrigger"));
 	EndTrigger->SetupAttachment(Root);

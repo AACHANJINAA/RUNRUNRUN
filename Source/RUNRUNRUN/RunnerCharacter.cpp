@@ -5,6 +5,7 @@
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Engine/Engine.h"
 #include "RunnerGameMode.h"
 #include "TimerManager.h"
 #include "UObject/ConstructorHelpers.h"
@@ -14,6 +15,13 @@ ARunnerCharacter::ARunnerCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 
 	GetCapsuleComponent()->InitCapsuleSize(42.0f, 96.0f);
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	GetCapsuleComponent()->SetCollisionObjectType(ECC_Pawn);
+	GetCapsuleComponent()->SetCollisionResponseToAllChannels(ECR_Ignore);
+	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_WorldStatic, ECR_Block);
+	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Overlap);
+	GetCapsuleComponent()->SetGenerateOverlapEvents(true);
+
 	GetCharacterMovement()->GravityScale = 2.0f;
 	GetCharacterMovement()->AirControl = 0.35f;
 	GetCharacterMovement()->JumpZVelocity = 900.0f;
@@ -44,6 +52,8 @@ ARunnerCharacter::ARunnerCharacter()
 	{
 		GetMesh()->SetSkeletalMesh(CharacterMeshOverride);
 	}
+
+	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	if (bUsingCustomRunnerMesh)
 	{
@@ -80,6 +90,7 @@ void ARunnerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+	SetActorLocation(GetActorLocation() + FVector(0.0f, 0.0f, InitialSpawnHeightOffset));
 	StartLocation = GetActorLocation();
 	DefaultCapsuleHalfHeight = GetCapsuleComponent()->GetUnscaledCapsuleHalfHeight();
 
@@ -141,6 +152,15 @@ void ARunnerCharacter::KillCharacter()
 	}
 
 	bIsDead = true;
+	UE_LOG(LogTemp, Warning, TEXT("RunnerCharacter::KillCharacter -> bIsDead set to true for %s"), *GetName());
+	if (GEngine)
+	{
+		GEngine->AddOnScreenDebugMessage(
+			-1,
+			2.0f,
+			FColor::Red,
+			FString::Printf(TEXT("bIsDead = true (%s)"), *GetName()));
+	}
 	GetCharacterMovement()->DisableMovement();
 
 	if (ARunnerGameMode* GM = GetWorld()->GetAuthGameMode<ARunnerGameMode>())

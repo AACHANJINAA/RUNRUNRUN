@@ -41,8 +41,13 @@ void ARunnerSpawner::SpawnNextTile()
 		return;
 	}
 
-	const float TileLength = 3000.0f;
-	const FVector SpawnLocation = GetActorLocation() + FVector(NextTileIndex * TileLength, 0.0f, 0.0f);
+	float TileLength = 3000.0f;
+	if (const ARunnerTile* TileDefaults = TileClass->GetDefaultObject<ARunnerTile>())
+	{
+		TileLength = TileDefaults->GetTileLength();
+	}
+
+	const FVector SpawnLocation = GetActorLocation() + FVector((NextTileIndex * TileLength) - (TileLength * 0.5f), 0.0f, 0.0f);
 	ARunnerTile* Tile = GetWorld()->SpawnActor<ARunnerTile>(TileClass, SpawnLocation, FRotator::ZeroRotator);
 	if (Tile)
 	{

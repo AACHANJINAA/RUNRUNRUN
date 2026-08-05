@@ -59,6 +59,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Runner|Movement")
 	float SlideDuration = 0.65f;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Runner|Movement")
+	float InitialSpawnHeightOffset = 300.0f;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Runner|State")
 	bool bIsDead = false;
 
